@@ -1,0 +1,10 @@
+# Ignore everything
+*
+
+# Track only personal config and commands
+!.gitignore
+!CLAUDE.md
+!commands/
+!commands/**
+!skills/
+!skills/**
