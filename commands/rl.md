@@ -1,4 +1,4 @@
-Run a full review + fix pipeline: /simplify + /rl1 in parallel, then /rl2.
+Run a full review + fix pipeline: /simplify + /rl1 in parallel.
 
 ## Instructions
 
@@ -6,11 +6,10 @@ Run a full review + fix pipeline: /simplify + /rl1 in parallel, then /rl2.
 
 Use TaskCreate/TaskUpdate throughout:
 
-1. Create a parent task: "Full review pipeline: (simplify + rl1) → rl2" → mark `in_progress` immediately.
-2. Create three child tasks:
+1. Create a parent task: "Full review pipeline: simplify + rl1" → mark `in_progress` immediately.
+2. Create two child tasks:
    - "Phase 1a: simplify (code simplification)"
    - "Phase 1b: rl1 (Claude Code review loop)"
-   - "Phase 2: rl2 (Codex review loop)" — this task name MUST contain "rl2" so that `/rl1` can detect it and chain into `/rl2` automatically.
 
 ### Execution
 
@@ -19,25 +18,20 @@ Use TaskCreate/TaskUpdate throughout:
    - Call `Skill(rl1)` with $ARGUMENTS in the foreground. This takes over the conversation and runs the full review loop.
    - The simplify agent runs in the background in parallel while rl1 runs.
 
-2. **Automatic rl2 handoff**: When rl1 finishes, it will check TaskList, find the pending "Phase 2: rl2" task, and automatically call `Skill(rl2)`. No manual intervention needed.
-
-3. When rl2 completes, mark parent task `completed` and print the final summary.
+2. When rl1 completes, mark parent task `completed` and print the final summary.
 
 ### Final summary
 
 After ALL phases complete, print a combined report:
 
 ```
-## Full Review Pipeline Summary ((simplify + rl1) → rl2)
+## Full Review Pipeline Summary (simplify + rl1)
 
 ### Phase 1a: Simplify
 - (summarize simplify results — files modified, what changed)
 
 ### Phase 1b: Claude Code
 - (summarize rl1 results)
-
-### Phase 2: Codex
-- (summarize rl2 results)
 
 ### Combined
 - Total issues found: X

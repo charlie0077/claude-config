@@ -88,6 +88,3 @@ If there are remaining issues, list each one with file/line so the user can addr
 - Do NOT add unnecessary refactoring, comments, or type annotations.
 - Do NOT commit or stage changes. The user controls git.
 
-### Pipeline continuation
-
-After the loop ends and the final summary is printed, check `TaskList`. If there is a pending/open task with "rl2" in its subject (created by the `/rl` orchestrator), invoke `Skill(rl2)` to continue the pipeline. If no such task exists, you are done.
