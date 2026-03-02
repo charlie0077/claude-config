@@ -4,6 +4,13 @@ Run an iterative review + fix loop using only Claude Code agent until the code i
 
 You are the driver of this loop. Do NOT delegate to shell scripts. Use your own tools (Bash, Read, Edit, Write, Agent) to fix issues directly.
 
+### Language detection
+
+Before starting the loop, detect the project language:
+- If `go.mod` exists in the project root, this is a **Go project**. Use `everything-claude-code:go-reviewer` as the reviewer agent type for all iterations.
+- If `pyproject.toml`, `setup.py`, or `requirements.txt` exists in the project root, this is a **Python project**. Use `everything-claude-code:python-reviewer` as the reviewer agent type for all iterations.
+- Otherwise, use `everything-claude-code:code-reviewer` as the reviewer agent type.
+
 ### Progress tracking
 
 Use TaskCreate/TaskUpdate throughout to give the user visibility:
@@ -20,7 +27,7 @@ For each iteration:
 
 1. **Get the diff, then run 3 identical Claude Code reviews in parallel (all in background)**:
    - First, run `git diff` (or `git diff --cached` if staged, or `git diff HEAD` for both) to get the actual changed lines. Also run `git diff --name-only` to get the list of changed files.
-   - Launch 3 separate Agent instances (subagent_type: `everything-claude-code:code-reviewer`) all with `run_in_background: true` in a single message so they run concurrently.
+   - Launch 3 separate Agent instances (subagent_type: the reviewer agent type detected above) all with `run_in_background: true` in a single message so they run concurrently.
    - All 3 agents get the **same prompt** that includes the git diff output and the list of changed files. The prompt MUST include these instructions:
      - "Review ONLY the changed code shown in this diff. Do NOT review the entire project or unchanged files."
      - "It is completely OK to report ZERO issues. If the code is correct, say so. Do NOT manufacture issues to appear thorough."
